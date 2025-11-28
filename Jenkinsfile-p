@@ -63,7 +63,7 @@ pipeline {
 
                     ansible-playbook \\
                         -i inventory/\${ENV}/mariadb.hosts \\
-                        --private-key \$ANSIBLE_PRIVATE_KEY \\
+                        --private-key \${ANSIBLE_PRIVATE_KEY} \\
                         playbooks/mariadb.yml
                 """
             }
