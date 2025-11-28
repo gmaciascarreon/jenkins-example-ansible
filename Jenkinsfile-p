@@ -15,16 +15,6 @@ pipeline {
     }
 
     stages {
-        stage('Validate Parameters') {
-            steps {
-                script {
-                    // Abort if ENV is null, empty, or whitespace
-                    if (!params.ENV?.trim()) {
-                        error("ENV parameter was not set. Aborting job.")
-                    }
-                }
-            }
-        }
         stage('Select Credentials') {
             steps {
                 script {
