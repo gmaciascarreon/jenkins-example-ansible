@@ -47,9 +47,14 @@ pipeline {
 
         stage('Run Ansible') {
             steps {
+                    withCredentials([sshUserPrivateKey(
+                    credentialsId: env.ANSIBLE_PRIVATE_KEY,
+                    keyFileVariable: 'SSH_KEY',
+                    usernameVariable: 'SSH_USER'
+                     )]) {
                 sh '''
                     echo "Selected environment: $ENV"
-                    echo "Using private key at: $ANSIBLE_PRIVATE_KEY"
+                    echo "Using private key at: $SSH_KEY"
                     #chmod 600 $ANSIBLE_PRIVATE_KEY
                     sudo yum install -y python3
 
@@ -61,8 +66,9 @@ pipeline {
 
                     ansible-galaxy collection install -r requirements.yml
 
-                    ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=$ANSIBLE_PRIVATE_KEY playbooks/mariadb.yml
+                    ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=$SSH_KEY playbooks/mariadb.yml
                 '''
+                }
             }
         }
     }
