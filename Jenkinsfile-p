@@ -49,7 +49,7 @@ pipeline {
             steps {
                 sh """
                     echo "Selected environment: \$ENV"
-                    echo "Using private key at: \$ANSIBLE_PRIVATE_KEY"
+                    echo "Using private key at: \$env.ANSIBLE_PRIVATE_KEY"
 
                     sudo yum install -y python3
 
@@ -61,7 +61,7 @@ pipeline {
 
                     ansible-galaxy collection install -r requirements.yml
 
-                    ansible-playbook -i inventory/$ENV/mariadb.hosts --private-key=${ANSIBLE_PRIVATE_KEY} playbooks/mariadb.yml
+                    ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=${env.ANSIBLE_PRIVATE_KEY} playbooks/mariadb.yml
                 """
             }
         }
