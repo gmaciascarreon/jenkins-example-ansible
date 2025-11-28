@@ -51,6 +51,20 @@ pipeline {
                             ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=$SSH_KEY playbooks/mariadb.yml
                         '''
                     }
+                withCredentials([file(credentialsId: 'dcv_trial_license', variable: 'LICENSE_FILE')]) {
+                    sh '''
+                        echo "License is at: $LICENSE_FILE"
+                
+                        # Example: copy it to the place where your software expects it
+                        cp $LICENSE_FILE ./license.lic
+                
+                        # Or export an env var for software that reads license files
+                        export LICENSE_PATH=$LICENSE_FILE
+                
+                        # Debug
+                        ls -l $LICENSE_FILE
+                    '''
+                }
                 }
             }
         }
