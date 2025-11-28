@@ -1,5 +1,6 @@
 pipeline {
-  agent any
+  agent docker {
+            image 'rockylinux:9'
 
   stages {
     stage('Hello') {
