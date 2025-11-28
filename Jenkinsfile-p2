@@ -20,10 +20,13 @@ pipeline {
 
                     if (params.ENV == 'dev') {
                         credId = 'mariadb-private-key-dev'
+                        dcv_trial_license_id = 'dcv_trial_license_dev'
                     } else if (params.ENV == 'test') {
                         credId = 'mariadb-private-key-test'
+                        dcv_trial_license_id = 'dcv_trial_license_test'
                     } else if (params.ENV == 'prod') {
                         credId = 'mariadb-private-key-prod'
+                        dcv_trial_license_id = 'dcv_trial_license_prod'
                     }
 
                     withCredentials([sshUserPrivateKey(
@@ -51,7 +54,7 @@ pipeline {
                             ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=$SSH_KEY playbooks/mariadb.yml
                         '''
                     }
-                withCredentials([file(credentialsId: 'dcv_trial_license', variable: 'LICENSE_FILE')]) {
+                withCredentials([file(credentialsId: 'dcv_trial_license_id', variable: 'LICENSE_FILE')]) {
                     sh '''
                         echo "License is at: $LICENSE_FILE"
                 
