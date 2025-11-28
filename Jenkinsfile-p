@@ -35,6 +35,8 @@ pipeline {
                         env.ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-test')
                     } else if (params.ENV == 'prod') {
                         env.ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-prod')
+                    } else {
+                        error("ENV parameter was not set. Aborting job.")
                     }
 
                     echo "Using SSH key credentials for environment: ${params.ENV}"
