@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENV',
+            choices: ['dev', 'test', 'prod'],
+            description: 'Select environment for Ansible deployment'
+        )
+    }
+
+    stages {
+
+        stage('Run Ansible') {
+            steps {
+                script {
+
+                    // Select credential ID (string)
+                    def credId = ""
+
+                    if (params.ENV == 'dev') {
+                        credId = 'mariadb-private-key-dev'
+                    } else if (params.ENV == 'test') {
+                        credId = 'mariadb-private-key-test'
+                    } else if (params.ENV == 'prod') {
+                        credId = 'mariadb-private-key-prod'
+                    }
+
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: credId,
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )]) {
+
+                        sh '''
+                            echo "Selected environment: $ENV"
+                            echo "Using private key at: $SSH_KEY"
+
+                            sudo yum install -y python3
+
+                            python3 -m venv ansible
+                            source ansible/bin/activate
+
+                            pip install --upgrade pip
+                            pip install ansible
+
+                            ansible-galaxy collection install -r requirements.yml
+
+                            chmod 600 $SSH_KEY
+
+                            ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=$SSH_KEY playbooks/mariadb.yml
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
