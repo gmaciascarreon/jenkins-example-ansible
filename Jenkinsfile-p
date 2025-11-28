@@ -20,11 +20,11 @@ pipeline {
                 script {
                     // Choose SSH key based on selected ENV
                     if (params.ENV == 'dev') {
-                        ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-dev')
+                        env.ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-dev')
                     } else if (params.ENV == 'test') {
-                        ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-test')
+                        env.ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-test')
                     } else if (params.ENV == 'prod') {
-                        ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-prod')
+                        env.ANSIBLE_PRIVATE_KEY = credentials('mariadb-private-key-prod')
                     } else {
                         error("ENV parameter was not set. Aborting job.")
                     }
