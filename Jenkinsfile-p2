@@ -46,7 +46,7 @@ pipeline {
 
                             ansible-galaxy collection install -r requirements.yml
 
-                            chmod 600 $SSH_KEY
+                            #chmod 600 $SSH_KEY
 
                             ansible-playbook -i inventory/${ENV}/mariadb.hosts --private-key=$SSH_KEY playbooks/mariadb.yml
                         '''
