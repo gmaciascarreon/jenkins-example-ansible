@@ -6,8 +6,10 @@ pipeline {
       steps {
         sh '''
           #uname -a
-          sudo dnf install -y epel-release
-          sudo yum install -y apptainer python3
+          #sudo dnf install -y epel-release
+          sudo dnf install -y https://github.com/apptainer/apptainer/releases/download/v1.4.4/apptainer-1.4.4-1.x86_64.rpm
+          #sudo yum install -y apptainer python3
+          sudo yum install -y python3
           python3 -m venv ansible
           source ansible/bin/activate
           pip install --upgrade pip
