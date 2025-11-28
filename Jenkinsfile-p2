@@ -20,13 +20,13 @@ pipeline {
 
                     if (params.ENV == 'dev') {
                         credId = 'mariadb-private-key-dev'
-                        dcv_trial_license_id = 'dcv_trial_license_dev'
+                        dcv_trial_license_id = credentials('dcv_trial_license_dev')
                     } else if (params.ENV == 'test') {
                         credId = 'mariadb-private-key-test'
-                        dcv_trial_license_id = 'dcv_trial_license_test'
+                        dcv_trial_license_id = credentials('dcv_trial_license_test')
                     } else if (params.ENV == 'prod') {
                         credId = 'mariadb-private-key-prod'
-                        dcv_trial_license_id = 'dcv_trial_license_prod'
+                        dcv_trial_license_id = credentials('dcv_trial_license_prod')
                     }
 
                     withCredentials([sshUserPrivateKey(
