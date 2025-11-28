@@ -49,7 +49,7 @@ pipeline {
             steps {
                 sh """
                     echo "Selected environment: \$ENV"
-                    echo "Using private key at: \$env.ANSIBLE_PRIVATE_KEY"
+                    echo "Using private key at: \$ANSIBLE_PRIVATE_KEY"
 
                     sudo yum install -y python3
 
