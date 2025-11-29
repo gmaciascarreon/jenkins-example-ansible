@@ -64,14 +64,14 @@ pipeline {
                             ansible-galaxy collection install -r requirements.yml
 
                             # Copy license to where the software needs it
-                            cp $LICENSE_FILE ./license.lic
+                            #cp $LICENSE_FILE ./license.lic
 
-                            ls -l ./license.lic
+                            #ls -l ./license.lic
 
                             ansible-playbook \
                                 -i inventory/${ENV}/mariadb.hosts \
                                 --private-key=$SSH_KEY \
-                                --extra-vars "license_file=./license.lic" \
+                                --extra-vars "license_file=$LICENSE_FILE" \
                                 playbooks/mariadb.yml
                         '''
                     }
