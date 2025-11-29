@@ -40,6 +40,13 @@
       ansible.builtin.command: mysql --version
       register: mysql_version
     - debug: var=mysql_version.stdout_lines
+    - name: Ensure license directory exists
+      file:
+        path: /etc/myapp
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
     - name: Copy license
       copy:
         src: "{{ License_file }}"
