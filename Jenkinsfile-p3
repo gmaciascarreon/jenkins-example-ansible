@@ -22,12 +22,18 @@ pipeline {
                     if (params.ENV == 'dev') {
                         sshCredId = 'mariadb-private-key-dev'
                         licenseCredId = 'dcv_trial_license_dev'
+                        ssl_certificate_crt = 'dev_ssl_certificate_crt'
+                        ssl_certificate_key = 'dev_ssl_certificate_key'
                     } else if (params.ENV == 'test') {
                         sshCredId = 'mariadb-private-key-test'
                         licenseCredId = 'dcv_trial_license_test'
+                        ssl_certificate_crt = 'test_ssl_certificate_crt'
+                        ssl_certificate_key = 'test_ssl_certificate_key'
                     } else if (params.ENV == 'prod') {
                         sshCredId = 'mariadb-private-key-prod'
                         licenseCredId = 'dcv_trial_license_prod'
+                        ssl_certificate_crt = 'prod_ssl_certificate_crt'
+                        ssl_certificate_key = 'prod_ssl_certificate_key'
                     } else {
                         error("Invalid environment")
                     }
@@ -46,7 +52,9 @@ pipeline {
                         file(
                             credentialsId: licenseCredId,
                             variable: 'LICENSE_FILE'
-                        )
+                        ),
+                        file(credentialsId: 'ssl_certificate_crt', variable: 'CRT_FILE'),
+                        file(credentialsId: 'ssl_certificate_key', variable: 'KEY_FILE')
                     ]) {
 
                         sh '''
@@ -71,7 +79,7 @@ pipeline {
                             ansible-playbook \
                                 -i inventory/${ENV}/mariadb.hosts \
                                 --private-key=$SSH_KEY \
-                                --extra-vars "License_file=$LICENSE_FILE ssl_crt=server.crt ssl_key=server.key"\
+                                --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE"\
                                 playbooks/site.yml
                         '''
                     }
