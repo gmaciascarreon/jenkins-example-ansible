@@ -57,8 +57,8 @@ pipeline {
                             credentialsId: licenseCredId,
                             variable: 'LICENSE_FILE'
                         ),
-                        file(credentialsId: 'ssl_certificate_crt', variable: 'CRT_FILE'),
-                        file(credentialsId: 'ssl_certificate_key', variable: 'KEY_FILE')
+                        file(credentialsId: ssl_certificate_crt, variable: 'CRT_FILE'),
+                        file(credentialsId: ssl_certificate_key, variable: 'KEY_FILE')
                     ]) {
 
                         sh '''
