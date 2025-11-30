@@ -43,6 +43,8 @@ pipeline {
                     echo "Selected environment: ${params.ENV}"
                     echo "Using SSH credential: ${sshCredId}"
                     echo "Using License credential: ${licenseCredId}"
+                    echo "Using CRT credential: ${ssl_certificate_crt}"
+                    echo "Using KEY credential: ${ssl_certificate_key}"
 
                     // Use BOTH credentials
                     withCredentials([
