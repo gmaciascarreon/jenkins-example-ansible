@@ -71,8 +71,8 @@ pipeline {
                             ansible-playbook \
                                 -i inventory/${ENV}/mariadb.hosts \
                                 --private-key=$SSH_KEY \
-                                --extra-vars "License_file=$LICENSE_FILE" \
-                                playbooks/mariadb.yml
+                                --extra-vars "License_file=$LICENSE_FILE ssl_crt=server.crt ssl_key=server.key"\
+                                playbooks/site.yml
                         '''
                     }
                 }
