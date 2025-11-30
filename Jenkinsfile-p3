@@ -18,6 +18,7 @@ pipeline {
                     // Select SSH and License credentials
                     def sshCredId = ""
                     def licenseCredId = ""
+                    def ssl_certificate_key = ""
 
                     if (params.ENV == 'dev') {
                         sshCredId = 'mariadb-private-key-dev'
