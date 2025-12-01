@@ -5,13 +5,26 @@ From: python:3.11-slim
     Author WalloMac
     Version v1.0
 
-%environment
+#%environment
+%arguments 
     # Default value (will be overridden by Jenkins)
-    export APP_ENV="dev"
+    #export APP_ENV="dev"
+    export env=$SIN_ENVIRONMENT
+%setup
+  mkdir ${APPTAINER_ROOTFS}/dist
+  mkdir ${APPTAINER_ROOTFS}/ansible
 
 %post
+    dnf install -y python3 glibc-common
     echo ">>> Installing Python..."
-    pip install --no-cache-dir --upgrade pip
+    pip install --no-cache-dir --upgrade pip    
+    python3 -m venv /opt/ansible
+    source /opt/ansible/bin/activate
+    pip install ansible
+    export LC_ALL=C.UTF-8
+    cd /ansible
+    ansible-playbook -i inventory/{{ APP_ENV }}/mariadb.hosts container.yml
+    
 
     mkdir -p /app
     cat << 'EOF' > /app/hello.py
