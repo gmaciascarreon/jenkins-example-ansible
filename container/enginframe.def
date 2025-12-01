@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: python:3.11-slim
+
+%labels
+    Author WalloMac
+    Version v1.0
+
+%environment
+    # Default value (will be overridden by Jenkins)
+    export APP_ENV="dev"
+
+%post
+    echo ">>> Installing Python..."
+    pip install --no-cache-dir --upgrade pip
+
+    mkdir -p /app
+    cat << 'EOF' > /app/hello.py
+import os
+env = os.getenv("APP_ENV", "unknown")
+print(f"Hello World! APP_ENV={env}")
+EOF
+
+%runscript
+    # When running the container, this is executed
+    python3 /app/hello.py
