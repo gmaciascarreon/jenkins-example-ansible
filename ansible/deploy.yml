@@ -1,0 +1,101 @@
+---
+- name Deploy EnginFrame container
+  host: all
+  gather_facts: false
+  become: false
+
+  #var:
+  #CONTAINER_FILE: "{{ lookup('env', 'CONTAINER_FILE') }}"
+  #LICENSE_FILE: "{{ look('env', LICENSE_FILE) }}"
+  #SSHKEY: "{{ lookup('env', 'SSLKEY') }}"
+  #SSLCRT: "{{ lookup('env', 'SSLCRT') }}"
+
+  tasks:
+    - name: Ensure base directory exists
+      ansible.builtin.file:
+        path: "{{ enginframe.base_dir }}"
+        state: directory
+        mode: "0755"
+    - name: Ensure EnginFrame subdirectories exist
+      ansible.buitin.file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "{{ engineframe.base_dir }}/container"
+        - "{{ engineframe.base_dir }}/bin"
+        - "{{ engineframe.base_dir }}/overlay"
+        - "{{ engineframe.base_dir }}/systemd"
+        - "{{ engineframe.base_dir }}/nfsmap"
+        - "{{ engineframe.base_dir }}/data"
+        - "{{ engineframe.base_dir }}/hosts"
+        - "{{ engineframe.base_dir }}/data/derby"
+        - "{{ engineframe.base_dir }}/license"
+        - "{{ engineframe.base_dir }}/certificate"
+        - "{{ engineframe.base_dir }}/repository"
+
+    - name: Copy EnginFrame container image to remote
+      ansible.builtin.copy:
+        src: "{{ CONTAINER_FILE }}"
+        dest: "{{ enginframe.base_dir }}/container/enginframe.sif"
+        mode: "0644"
+
+    - name: Copy license file
+      ansible.builtin.copy:
+        src: "{{ LICENSE_FILE }}"
+        dest: "{{ enginframe.base_dir }}/license/license.ef
+        mode: "0600"
+
+    - name: Set license folder permissions to 755 so {{ enginframe.tomcat_user }} cann read it
+      ansible.builtin.file
+        path: "{{ enginframe.base_dir }}/license"
+        state: directory
+        mode: "0755"
+
+    - name: Set ACL for {{ enginfram.tomcat_user }} on license.ef
+      ansible.buitin.shell: "setfacl -m -u:{{ enginfram.tomcat_user }}:r {{ enginfram.base_dir }}/license/license.ef"
+
+    - name: Copy ssl cert
+      ansible.builtin.copy:
+        src: "{{ SSLCRT }}"
+        dest: "{{ enginframe.base_dir }}/certificate/proxy.pem"
+        mode: "0600"
+
+    - name: Copy ssl key
+      ansible.builtin.copy:
+        src: "{{ SSLKEY }}"
+        dest: "{{ enginframe.base_dir }}/certificate/proxy.key"
+        mode: "0600"
+
+    #- name: Generate nfs.auto map
+    #  ansible.builtin.template:
+    #    src: "auto.nfs.j2"
+    #    dest: "{{ enginframe.base_dir }}/nfsmap/auto.nfs"
+    #    mode: "0600"
+
+    #- name: Custom /etc/hosts
+    #  ansible.builtin.template:
+    #    src: "hosts.j2"
+    #    dest: "{{enginframe.base_dir }}/hosts/hosts"
+    #    mode: "0644"
+
+    #- name: Deploy start.sh from template
+    #  ansible.builtin.template:
+    #    src: "start.sh.j2"
+    #    dest: "{{enginframe.base_dir }}/bin/start.sh"
+    #    mode: "0755"
+        
+    #- name: Deploy stop.sh from template
+    #  ansible.builtin.template:
+    #    src: "stop.sh.j2"
+    #    dest: "{{enginframe.base_dir }}/bin/stop.sh"
+    #    mode: "0755"
+
+    #- name: Generate systemd script
+    #  ansible.builtin.template:
+    #    src: "enginframe.service.j2"
+    #    dest: "{{enginframe.base_dir }}/systemd/enginframe.service"
+    #    mode: "0755"
+
+    #- name: Restart enginframe service ( via sudo command )
+    #  ansible.builtin.shell: "sudo /bin/systemctl restart enginframe"
+      
