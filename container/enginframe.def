@@ -15,6 +15,7 @@ From: python:3.11-slim
   mkdir ${APPTAINER_ROOTFS}/ansible
 
 %post
+    export APP_ENV="${APPTAINER_ARG_APP_ENV}"
     dnf install -y python3 glibc-common
     echo ">>> Installing Python..."
     pip install --no-cache-dir --upgrade pip    
