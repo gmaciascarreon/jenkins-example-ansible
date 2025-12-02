@@ -46,7 +46,7 @@
         mode: "0600"
 
     - name: Set license folder permissions to 755 so {{ enginframe.tomcat_user }} cann read it
-      ansible.builtin.file
+      ansible.builtin.file:
         path: "{{ enginframe.base_dir }}/license"
         state: directory
         mode: "0755"
