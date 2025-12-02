@@ -15,9 +15,8 @@
       ansible.builtin.file:
         path: "{{ enginframe.base_dir }}"
         state: directory
-        mode: "0755"
-        register: dir_result
-        failed_when: dir_result is failed
+        recurse: yes
+        mode: '0777'
         
     - name: Ensure EnginFrame subdirectories exist
       ansible.builtin.file:
