@@ -15,8 +15,11 @@
       ansible.builtin.file:
         path: "{{ enginframe.base_dir }}"
         state: directory
+        owner: vagrant
+        group: vagrant
         recurse: yes
         mode: '0777'
+      become: yes
         
     - name: Ensure EnginFrame subdirectories exist
       ansible.builtin.file:
