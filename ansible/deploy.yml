@@ -57,7 +57,7 @@
         mode: "0755"
 
     - name: Set ACL for {{ enginframe.tomcat_user }} on license.ef
-      ansible.builtin.shell: "setfacl -m -u:{{ enginfram.tomcat_user }}:r {{ enginfram.base_dir }}/license/license.ef"
+      ansible.builtin.shell: "setfacl -m -u:{{ enginframe.tomcat_user }}:r {{ enginframe.base_dir }}/license/license.ef"
 
     - name: Copy ssl cert
       ansible.builtin.copy:
