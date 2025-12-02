@@ -23,14 +23,14 @@ From: python:3.11-slim
     pip install ansible
     export LC_ALL=C.UTF-8
     cd /ansible
-    ansible-playbook -i inventory/{{ APP_ENV }}/mariadb.hosts container.yml
+    ansible-playbook -i inventory/${APP_ENV}/mariadb.hosts container.yml
     
 
     mkdir -p /app
     cat << 'EOF' > /app/hello.py
 import os
 env = os.getenv("APP_ENV", "unknown")
-print(f"Hello World! APP_ENV={env}")
+print(f"Hello World! APP_ENV=${APP_ENV}")
 EOF
 
 %runscript
