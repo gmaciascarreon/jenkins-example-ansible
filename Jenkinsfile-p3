@@ -100,6 +100,12 @@ pipeline {
                             sudo -E apptainer build --force  --build-arg APP_ENV="${ENV}" -B $PWD/dist:/dist -B $PWD/../ansible:/ansible enginframe.sif enginframe.def
                             export CONTAINER_FILE=$PWD/enginframe.sif
                             ls -lth $CONTAINER_FILE
+                            cd ../ansible
+                            ansible-playbook \
+                                -i inventory/${ENV}/mariadb.hosts \
+                                --private-key=$SSH_KEY \
+                                --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
+                                deploy.yml
                         '''
                     }
                 }
