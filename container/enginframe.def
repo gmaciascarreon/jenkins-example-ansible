@@ -6,9 +6,9 @@ From: python:3.11-slim
     Version v1.0
 
 #%environment
-#%arguments 
+%arguments 
 #    # Default value (will be overridden by Jenkins)
-#    #export APP_ENV="dev"
+export APP_ENV="dev"
 #    export APP_ENV=$SIN_ENVIRONMENT
 %setup
   mkdir ${APPTAINER_ROOTFS}/dist
