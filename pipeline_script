@@ -1,0 +1,115 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENV',
+            choices: ['dev', 'test', 'prod'],
+            description: 'Select environment for Ansible deployment'
+        )
+    }
+
+    stages {
+
+        stage('Run Ansible') {
+            steps {
+                script {
+
+                    // Select SSH and License credentials
+                    def sshCredId = ""
+                    def licenseCredId = ""
+                    def ssl_certificate_crt = ""
+                    def ssl_certificate_key = ""
+
+                    if (params.ENV == 'dev') {
+                        sshCredId = 'mariadb-private-key-dev'
+                        licenseCredId = 'dcv_trial_license_dev'
+                        ssl_certificate_crt = 'dev_ssl_certificate_crt'
+                        ssl_certificate_key = 'dev_ssl_certificate_key'
+                    } else if (params.ENV == 'test') {
+                        sshCredId = 'mariadb-private-key-test'
+                        licenseCredId = 'dcv_trial_license_test'
+                        ssl_certificate_crt = 'test_ssl_certificate_crt'
+                        ssl_certificate_key = 'test_ssl_certificate_key'
+                    } else if (params.ENV == 'prod') {
+                        sshCredId = 'mariadb-private-key-prod'
+                        licenseCredId = 'dcv_trial_license_prod'
+                        ssl_certificate_crt = 'prod_ssl_certificate_crt'
+                        ssl_certificate_key = 'prod_ssl_certificate_key'
+                    } else {
+                        error("Invalid environment")
+                    }
+
+                    echo "Selected environment: ${params.ENV}"
+                    echo "Using SSH credential: ${sshCredId}"
+                    echo "Using License credential: ${licenseCredId}"
+                    echo "Using CRT credential: ${ssl_certificate_crt}"
+                    echo "Using KEY credential: ${ssl_certificate_key}"
+
+                    // Use BOTH credentials
+                    withCredentials([
+                        sshUserPrivateKey(
+                            credentialsId: sshCredId,
+                            keyFileVariable: 'SSH_KEY',
+                            usernameVariable: 'SSH_USER'
+                        ),
+                        file(
+                            credentialsId: licenseCredId,
+                            variable: 'LICENSE_FILE'
+                        ),
+                        file(credentialsId: ssl_certificate_crt, variable: 'CRT_FILE'),
+                        file(credentialsId: ssl_certificate_key, variable: 'KEY_FILE')
+                    ]) {
+
+                        sh '''
+                            echo "Using private key: $SSH_KEY"
+                            echo "License temp file: $LICENSE_FILE"
+
+                            sudo yum install -y python3
+
+                            python3 -m venv ansible
+                            source ansible/bin/activate
+
+                            pip install --upgrade pip
+                            pip install ansible
+
+                            ansible-galaxy collection install -r requirements.yml
+
+                            # Copy license to where the software needs it
+                            #cp $LICENSE_FILE ./license.lic
+
+                            #ls -l ./license.lic
+                            cd ansible
+                            #ansible-playbook \
+                            #    -i inventory/${ENV}/hosts.yml \
+                            #    --private-key=$SSH_KEY \
+                            #    --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
+                            #    site.yml
+
+                            #run Apptainer to create sif image
+                            sudo dnf install -y apptainer
+                            cd ../container
+                            mkdir -p dist
+                            cp $LICENSE_FILE dist/license.ef
+                            chmod 644 dist/license.ef
+                            export APPTAINER_TMPDIR=$PWD/tmp
+                            #export APP_ENV="${ENV}"
+                            mkdir -p $APPTAINER_TMPDIR
+
+                            # --build-arg APP_ENV=$APP_ENV
+                            sudo -E apptainer build --force  --build-arg APP_ENV="${ENV}" -B $PWD/dist:/dist -B $PWD/../ansible:/ansible enginframe.sif enginframe.def
+                            export CONTAINER_FILE=$PWD/enginframe.sif
+                            ls -lth $CONTAINER_FILE
+                            cd ../ansible
+                            ansible-playbook \
+                                -i inventory/${ENV}/hosts.yml \
+                                --private-key=$SSH_KEY \
+                                --extra-vars "CONTAINER_FILE=$CONTAINER_FILE LICENSE_FILE=$LICENSE_FILE SSLCRT=$CRT_FILE SSLKEY=$KEY_FILE SSH_USER=$SSH_USER"\
+                                deploy.yml
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
