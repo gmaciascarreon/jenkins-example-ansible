@@ -1,0 +1,51 @@
+---
+- name: Install and configure NGINX with SSL
+  hosts: web
+  become: yes
+
+  vars:
+    nginx_ssl_dir: /etc/nginx/ssl
+
+  tasks:
+
+    - name: Install NGINX
+      package:
+        name: nginx
+        state: present
+
+    - name: Create SSL directory
+      file:
+        path: "{{ nginx_ssl_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy SSL certificate
+      copy:
+        src: "{{ ssl_crt }}"
+        dest: "{{ nginx_ssl_dir }}/server.crt"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Copy SSL key
+      copy:
+        src: "{{ ssl_key }}"
+        dest: "{{ nginx_ssl_dir }}/server.key"
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Deploy SSL-enabled NGINX config
+      template:
+        src: ssl-nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+
+    - name: Test NGINX configuration
+      command: nginx -t
+      register: nginx_test
+      failed_when: "'successful' not in nginx_test.stderr"
+
+    - name: Restart NGINX
+      service:
+        name: nginx
+        state: restarted
