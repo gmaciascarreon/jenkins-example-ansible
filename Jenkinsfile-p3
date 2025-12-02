@@ -79,16 +79,16 @@ pipeline {
                             #cp $LICENSE_FILE ./license.lic
 
                             #ls -l ./license.lic
-                            
+                            cd ansible
                             ansible-playbook \
-                                -i ansible/inventory/${ENV}/hosts.yml \
+                                -i inventory/${ENV}/hosts.yml \
                                 --private-key=$SSH_KEY \
                                 --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
-                                ansible/site.yml
+                                site.yml
 
                             #run Apptainer to create sif image
                             sudo dnf install -y apptainer
-                            cd container
+                            cd ../container
                             mkdir -p dist
                             cp $LICENSE_FILE dist/license.ef
                             chmod 644 dist/license.ef
