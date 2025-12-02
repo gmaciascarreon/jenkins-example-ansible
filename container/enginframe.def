@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: python:3.11-slim
+From: rockylinux:9
 
 %labels
     Author WalloMac
@@ -17,14 +17,14 @@ export APP_ENV=${APP_ENV}
 
 %post
     # ---- Detect correct variable name ----
-    #if [ -n "${APPTAINER_ARG_APP_ENV}" ]; then
-    #    export APP_ENV="${APPTAINER_ARG_APP_ENV}"
-    #elif [ -n "${SINGULARITY_ARG_APP_ENV}" ]; then
-    #    export APP_ENV="${SINGULARITY_ARG_APP_ENV}"
-    #else
-    #    echo "ERROR: APP_ENV argument not found!"
-    #    exit 1
-    #fi
+    if [ -n "${APPTAINER_ARG_APP_ENV}" ]; then
+        export APP_ENV="${APPTAINER_ARG_APP_ENV}"
+    elif [ -n "${SINGULARITY_ARG_APP_ENV}" ]; then
+        export APP_ENV="${SINGULARITY_ARG_APP_ENV}"
+    else
+        echo "ERROR: APP_ENV argument not found!"
+        exit 1
+    fi
 
     echo ">>> BUILD using APP_ENV=${APP_ENV}"
 
