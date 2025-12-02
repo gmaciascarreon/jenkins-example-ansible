@@ -93,7 +93,7 @@ pipeline {
                             cp $LICENSE_FILE dist/license.ef
                             chmod 644 dist/license.ef
                             export APPTAINER_TMPDIR=$PWD/tmp
-                            export SIN_ENVIRONMENT="${ENV}"
+                            export APP_ENV="${ENV}"
                             mkdir -p $APPTAINER_TMPDIR
                             
                             sudo -E apptainer build -B $PWD/dist -B $PWD/../ansible enginframe.sif enginframe.def
