@@ -1,5 +1,5 @@
 - name: Install and configure engineframe
-  host: all
+  hosts: localhost
   connection: local
   become: yes
   roles:
