@@ -16,22 +16,23 @@
         path: "{{ enginframe.base_dir }}"
         state: directory
         mode: "0755"
+        
     - name: Ensure EnginFrame subdirectories exist
       ansible.buitin.file:
         path: "{{ item }}"
         state: directory
       loop:
-        - "{{ engineframe.base_dir }}/container"
-        - "{{ engineframe.base_dir }}/bin"
-        - "{{ engineframe.base_dir }}/overlay"
-        - "{{ engineframe.base_dir }}/systemd"
-        - "{{ engineframe.base_dir }}/nfsmap"
-        - "{{ engineframe.base_dir }}/data"
-        - "{{ engineframe.base_dir }}/hosts"
-        - "{{ engineframe.base_dir }}/data/derby"
-        - "{{ engineframe.base_dir }}/license"
-        - "{{ engineframe.base_dir }}/certificate"
-        - "{{ engineframe.base_dir }}/repository"
+        - "{{ enginframe.base_dir }}/container"
+        - "{{ enginframe.base_dir }}/bin"
+        - "{{ enginframe.base_dir }}/overlay"
+        - "{{ enginframe.base_dir }}/systemd"
+        - "{{ enginframe.base_dir }}/nfsmap"
+        - "{{ enginframe.base_dir }}/data"
+        - "{{ enginframe.base_dir }}/hosts"
+        - "{{ enginframe.base_dir }}/data/derby"
+        - "{{ enginframe.base_dir }}/license"
+        - "{{ enginframe.base_dir }}/certificate"
+        - "{{ enginframe.base_dir }}/repository"
 
     - name: Copy EnginFrame container image to remote
       ansible.builtin.copy:
