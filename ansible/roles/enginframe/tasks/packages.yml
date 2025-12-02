@@ -1,5 +1,5 @@
 - name: Ensure required packages are installed
-  ansible.built.dnf:
+  ansible.builtin.dnf:
     name:
       - which
       - wget
