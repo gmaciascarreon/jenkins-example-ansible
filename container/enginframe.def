@@ -9,7 +9,7 @@ From: python:3.11-slim
 %arguments 
     # Default value (will be overridden by Jenkins)
     #export APP_ENV="dev"
-    export env=$SIN_ENVIRONMENT
+    export APP_ENV=$SIN_ENVIRONMENT
 %setup
   mkdir ${APPTAINER_ROOTFS}/dist
   mkdir ${APPTAINER_ROOTFS}/ansible
