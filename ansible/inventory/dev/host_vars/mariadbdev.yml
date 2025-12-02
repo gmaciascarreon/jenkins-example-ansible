@@ -5,8 +5,8 @@ ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 enginframe:
   service_fqdn: dev_dcv.wallo.net
   nat_enabled: true
-  tomcat_user: "tomcat"
-  admin_user: "admin"
+  tomcat_user: "{{ SSH_USER }}"
+  admin_user: "{{ SSH_USER }}"
   base_dir: "/app/enginframe"
 apptainer:
   instance_name: enginframe
