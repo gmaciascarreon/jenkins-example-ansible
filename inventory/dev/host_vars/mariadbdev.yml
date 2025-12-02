@@ -1,0 +1,12 @@
+ansible_ssh_host: 192.168.4.13
+ansible_ssh_port: 22
+ansible_user: "{{ SSH_USER }}"
+ansible_ssh_common_args: '-o StrictHostKeyCheking=no'
+enginframe:
+  service_fqdn: dev_dcv.wallo.net
+  nat_enabled: true
+  tomcat_user: "tomcat"
+  admin_user: "admin"
+  base_dir: "/app/enginframe"
+apptainer:
+  instance_name: enginframe
