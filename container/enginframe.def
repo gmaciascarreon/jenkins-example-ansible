@@ -26,18 +26,22 @@ export APP_ENV={{ APP_ENV }}
     #    exit 1
     #fi
 
-    echo ">>> BUILD using APP_ENV=${APP_ENV}"
+    echo ">>> BUILD using APP_ENV={{ APP_ENV }}"
 
 
     dnf install -y python3 glibc-common
     echo ">>> Installing Python..."
-    pip install --no-cache-dir --upgrade pip    
-    python3 -m venv /opt/ansible
+    /usr/local/bin/python3 -m pip install --no-cache-dir --upgrade pip
+    /usr/local/bin/python3 -m venv /opt/ansible
+
+
+    #pip install --no-cache-dir --upgrade pip    
+    #python3 -m venv /opt/ansible
     source /opt/ansible/bin/activate
     pip install ansible
     export LC_ALL=C.UTF-8
     cd /ansible
-    ansible-playbook -i inventory/${APP_ENV}/mariadb.hosts container.yml
+    ansible-playbook -i inventory/{{ APP_ENV }}/mariadb.hosts container.yml
     
 
     mkdir -p /app
