@@ -95,8 +95,9 @@ pipeline {
                             export APPTAINER_TMPDIR=$PWD/tmp
                             export APP_ENV="${ENV}"
                             mkdir -p $APPTAINER_TMPDIR
-                            
-                            sudo -E apptainer build --build-arg APP_ENV=$APP_ENV -B $PWD/dist -B $PWD/../ansible enginframe.sif enginframe.def
+
+                            # --build-arg APP_ENV=$APP_ENV
+                            sudo -E apptainer build -B $PWD/dist -B $PWD/../ansible enginframe.sif enginframe.def
                         '''
                     }
                 }
