@@ -88,6 +88,10 @@ pipeline {
 
                             #run Apptainer to create sif image
                             sudo dnf install -y apptainer
+                            cd container
+                            mkdir -p dist
+                            cp $LICENSE_FILE dist/license.ef
+                            chmod 644 dist/license.ef
                             export APPTAINER_TMPDIR=$PWD/tmp
                             export SIN_ENVIRONMENT="${ENV}"
                             mkdir -p $APPTAINER_TMPDIR
