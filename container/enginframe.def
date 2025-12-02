@@ -5,10 +5,11 @@ From: python:3.11-slim
     Author WalloMac
     Version v1.0
 
-#%environment
-%arguments 
+%environment
+#%arguments 
 #    # Default value (will be overridden by Jenkins)
-     APP_ENV="dev"
+#     APP_ENV="dev"
+export APP_ENV=${APP_ENV}
 #    export APP_ENV=$SIN_ENVIRONMENT
 %setup
   mkdir ${APPTAINER_ROOTFS}/dist
@@ -16,14 +17,14 @@ From: python:3.11-slim
 
 %post
     # ---- Detect correct variable name ----
-    if [ -n "${APPTAINER_ARG_APP_ENV}" ]; then
-        export APP_ENV="${APPTAINER_ARG_APP_ENV}"
-    elif [ -n "${SINGULARITY_ARG_APP_ENV}" ]; then
-        export APP_ENV="${SINGULARITY_ARG_APP_ENV}"
-    else
-        echo "ERROR: APP_ENV argument not found!"
-        exit 1
-    fi
+    #if [ -n "${APPTAINER_ARG_APP_ENV}" ]; then
+    #    export APP_ENV="${APPTAINER_ARG_APP_ENV}"
+    #elif [ -n "${SINGULARITY_ARG_APP_ENV}" ]; then
+    #    export APP_ENV="${SINGULARITY_ARG_APP_ENV}"
+    #else
+    #    echo "ERROR: APP_ENV argument not found!"
+    #    exit 1
+    #fi
 
     echo ">>> BUILD using APP_ENV=${APP_ENV}"
 
