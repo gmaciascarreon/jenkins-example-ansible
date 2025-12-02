@@ -18,7 +18,7 @@
         mode: "0755"
         
     - name: Ensure EnginFrame subdirectories exist
-      ansible.buitin.file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: directory
       loop:
