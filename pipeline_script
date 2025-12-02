@@ -7,9 +7,43 @@ pipeline {
             choices: ['dev', 'test', 'prod'],
             description: 'Select environment for Ansible deployment'
         )
+        
+        string(
+            name: 'BRANCH',
+            defaultValue: 'main',
+            description: 'Type the branch name to checkout (default: main)',
+            trim: true
+        )
     }
 
     stages {
+        stage('Checkout Repository') {
+            steps {
+                script {
+                    echo "Checking out repository: https://github.com/gmaciascarreon/jenkins-example-ansible/"
+                    echo "Branch: ${params.BRANCH}"
+                    
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "${params.BRANCH}"]],
+                        extensions: [],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/gmaciascarreon/jenkins-example-ansible/'
+                        ]]
+                    ])
+                    
+                    // Verify checkout
+                    sh '''
+                        echo "Current directory:"
+                        pwd
+                        echo "Repository contents:"
+                        ls -la
+                        echo "Current branch:"
+                        git branch --show-current || git rev-parse --abbrev-ref HEAD
+                    '''
+                }
+            }
+        }
 
         stage('Run Ansible') {
             steps {
@@ -41,6 +75,7 @@ pipeline {
                     }
 
                     echo "Selected environment: ${params.ENV}"
+                    echo "Selected branch: ${params.BRANCH}"
                     echo "Using SSH credential: ${sshCredId}"
                     echo "Using License credential: ${licenseCredId}"
                     echo "Using CRT credential: ${ssl_certificate_crt}"
@@ -64,6 +99,10 @@ pipeline {
                         sh '''
                             echo "Using private key: $SSH_KEY"
                             echo "License temp file: $LICENSE_FILE"
+                            echo "Current working directory:"
+                            pwd
+                            echo "Contents:"
+                            ls -la
 
                             sudo yum install -y python3
 
@@ -73,22 +112,39 @@ pipeline {
                             pip install --upgrade pip
                             pip install ansible
 
-                            ansible-galaxy collection install -r requirements.yml
+                            # Check if requirements.yml exists before running ansible-galaxy
+                            if [ -f requirements.yml ]; then
+                                echo "Installing Ansible collections from requirements.yml"
+                                ansible-galaxy collection install -r requirements.yml
+                            else
+                                echo "requirements.yml not found, skipping ansible-galaxy"
+                            fi
 
                             # Copy license to where the software needs it
                             #cp $LICENSE_FILE ./license.lic
 
                             #ls -l ./license.lic
-                            cd ansible
-                            #ansible-playbook \
-                            #    -i inventory/${ENV}/hosts.yml \
-                            #    --private-key=$SSH_KEY \
-                            #    --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
-                            #    site.yml
-
+                            
+                            # Check if ansible directory exists (should from checkout)
+                            if [ -d "ansible" ]; then
+                                cd ansible
+                            else
+                                echo "ansible directory not found, staying in root"
+                            fi
+                            
                             #run Apptainer to create sif image
                             sudo dnf install -y apptainer
-                            cd ../container
+                            
+                            # Navigate to container directory
+                            if [ -d "../container" ]; then
+                                cd ../container
+                            elif [ -d "container" ]; then
+                                cd container
+                            else
+                                echo "container directory not found"
+                                exit 1
+                            fi
+                            
                             mkdir -p dist
                             cp $LICENSE_FILE dist/license.ef
                             chmod 644 dist/license.ef
@@ -100,7 +156,29 @@ pipeline {
                             sudo -E apptainer build --force  --build-arg APP_ENV="${ENV}" -B $PWD/dist:/dist -B $PWD/../ansible:/ansible enginframe.sif enginframe.def
                             export CONTAINER_FILE=$PWD/enginframe.sif
                             ls -lth $CONTAINER_FILE
-                            cd ../ansible
+                            
+                            # Navigate back to ansible directory
+                            if [ -d "../ansible" ]; then
+                                cd ../ansible
+                            elif [ -d "../../ansible" ]; then
+                                cd ../../ansible
+                            else
+                                echo "ansible directory not found for playbook execution"
+                                exit 1
+                            fi
+                            
+                            # Check if inventory exists
+                            echo "Checking inventory for environment: ${ENV}"
+                            if [ -d "inventory/${ENV}" ]; then
+                                echo "Found inventory for ${ENV}"
+                                ls -la inventory/${ENV}/
+                            else
+                                echo "ERROR: inventory/${ENV}/ not found!"
+                                echo "Available inventories:"
+                                ls -la inventory/ 2>/dev/null || echo "No inventory directory found"
+                                exit 1
+                            fi
+                            
                             ansible-playbook \
                                 -i inventory/${ENV}/hosts.yml \
                                 --private-key=$SSH_KEY \
