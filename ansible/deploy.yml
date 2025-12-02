@@ -1,6 +1,6 @@
 ---
 - name Deploy EnginFrame container
-  host: all
+  hosts: all
   gather_facts: false
   become: false
 
