@@ -45,6 +45,7 @@ export APP_ENV={{ APP_ENV }}
     #ansible-playbook -i localhost container.yml
 
     mkdir -p /app
+    chmod 777 /app
     cat << 'EOF' > /app/hello.py
 import os
 env = os.getenv("APP_ENV", "unknown")
