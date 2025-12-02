@@ -42,7 +42,7 @@
     - name: Copy license file
       ansible.builtin.copy:
         src: "{{ LICENSE_FILE }}"
-        dest: "{{ enginframe.base_dir }}/license/license.ef
+        dest: "{{ enginframe.base_dir }}/license/license.ef"
         mode: "0600"
 
     - name: Set license folder permissions to 755 so {{ enginframe.tomcat_user }} cann read it
