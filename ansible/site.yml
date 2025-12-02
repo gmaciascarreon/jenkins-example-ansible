@@ -1,0 +1,4 @@
+---
+# Master playbook that includes other playbooks in the same folder
+- import_playbook: mariadb.yml
+- import_playbook: install_nginx_ssl.yml
