@@ -104,7 +104,7 @@ pipeline {
                             ansible-playbook \
                                 -i inventory/${ENV}/hosts.yml \
                                 --private-key=$SSH_KEY \
-                                --extra-vars "CONTAINER_FILE=$CONTAINER_FILE LICENSE_FILE=$LICENSE_FILE SSLCRT=$CRT_FILE SSHKEY=$KEY_FILE SSH_USER=$SSH_USER"\
+                                --extra-vars "CONTAINER_FILE=$CONTAINER_FILE LICENSE_FILE=$LICENSE_FILE SSLCRT=$CRT_FILE SSLKEY=$KEY_FILE SSH_USER=$SSH_USER"\
                                 deploy.yml
                         '''
                     }
