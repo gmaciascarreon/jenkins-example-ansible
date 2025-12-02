@@ -81,7 +81,7 @@ pipeline {
                             #ls -l ./license.lic
 
                             ansible-playbook \
-                                -i inventory/${ENV}/mariadb.hosts \
+                                -i inventory/${ENV}/hosts.yml \
                                 --private-key=$SSH_KEY \
                                 --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
                                 playbooks/site.yml
