@@ -1,5 +1,5 @@
 ---
-- name Deploy EnginFrame container
+- name: Deploy EnginFrame container
   hosts: all
   gather_facts: false
   become: false
