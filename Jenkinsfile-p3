@@ -80,11 +80,11 @@ pipeline {
 
                             #ls -l ./license.lic
                             cd ansible
-                            ansible-playbook \
-                                -i inventory/${ENV}/hosts.yml \
-                                --private-key=$SSH_KEY \
-                                --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
-                                site.yml
+                            #ansible-playbook \
+                            #    -i inventory/${ENV}/hosts.yml \
+                            #    --private-key=$SSH_KEY \
+                            #    --extra-vars "License_file=$LICENSE_FILE ssl_crt=$CRT_FILE ssl_key=$KEY_FILE SSH_USER=$SSH_USER"\
+                            #    site.yml
 
                             #run Apptainer to create sif image
                             sudo dnf install -y apptainer
@@ -102,7 +102,7 @@ pipeline {
                             ls -lth $CONTAINER_FILE
                             cd ../ansible
                             ansible-playbook \
-                                -i ansible/inventory/${ENV}/hosts.yml \
+                                -i inventory/${ENV}/hosts.yml \
                                 --private-key=$SSH_KEY \
                                 --extra-vars "CONTAINER_FILE=$CONTAINER_FILE LICENSE_FILE=$LICENSE_FILE SSLCRT=$CRT_FILE SSHKEY=$KEY_FILE SSH_USER=$SSH_USER"\
                                 deploy.yml
