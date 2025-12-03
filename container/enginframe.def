@@ -41,7 +41,7 @@ export APP_ENV={{ APP_ENV }}
     pip install ansible
     export LC_ALL=C.UTF-8
     cd /ansible
-    ansible-playbook -i inventory/{{ APP_ENV }}/mariadb.hosts container.yml
+    ansible-playbook -i inventory/{{ APP_ENV }}/localhost.yml container.yml
     #ansible-playbook -i localhost container.yml
 
     mkdir -p /app
