@@ -60,6 +60,7 @@
         insertafter: '^\[client-server\]'
         #marker: ""    # No BEGIN/END markers
         block: |
-          #testing adding lines
-          192.168.4.13
+          {% for user in enginframe.admins %}
+          <ef:acl-member type="efuser">{{ admins }}</ef:acl-member>
+          {% endfor %}
 
