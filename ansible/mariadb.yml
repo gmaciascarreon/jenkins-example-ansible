@@ -55,7 +55,7 @@
     - name: Add two lines after [client-server]
       ansible.builtin.blockinfile:
         path: /etc/my.cnf
-        insertafter: '^\[client-server\]$'
+        insertafter: '^\[client-server\]'
         marker: ""    # No BEGIN/END markers
         block: |
           #testing adding lines
