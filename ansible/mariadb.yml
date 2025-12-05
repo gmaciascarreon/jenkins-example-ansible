@@ -60,7 +60,7 @@
         insertafter: '^\[client-server\]'
         #marker: ""    # No BEGIN/END markers
         block: |
-          {% for user in enginframe.admins %}
-          <ef:acl-member type="efuser">{{ admins }}</ef:acl-member>
+          {% for admin in enginframe.admins %}
+          <ef:acl-member type="efuser">{{ admin }}</ef:acl-member>
           {% endfor %}
 
