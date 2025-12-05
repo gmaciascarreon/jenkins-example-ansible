@@ -52,3 +52,12 @@
         src: "{{ License_file }}"
         dest: /etc/myapp/license.lic
         mode: '0600'
+    - name: Add two lines after [client-server]
+      ansible.builtin.blockinfile:
+        path: /etc/my.cnf
+        insertafter: '^\[client-server\]$'
+        marker: ""    # No BEGIN/END markers
+        block: |
+          #testing adding lines
+          192.168.4.13
+
