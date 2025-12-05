@@ -8,5 +8,8 @@ enginframe:
   tomcat_user: "{{ SSH_USER }}"
   admin_user: "{{ SSH_USER }}"
   base_dir: "/app/enginframe"
+  admins:
+    - "wallo"
+    - "andrea"
 apptainer:
   instance_name: enginframe
